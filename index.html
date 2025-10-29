@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Title</title>
+    </head>
+    <style>
+        :root {
+            /* Paleta pedida */
+            --gray-600: #75727e;
+            --accent: #d07b99; /* principal */
+            --accent-strong: #ed2e62; /* contraste */
+            --black: #000000;
+            --white: #ffffff;
+
+            /* UI */
+            --bg-gradient: radial-gradient(1000px 600px at 10% 20%, rgba(208, 123, 153, 0.1), rgba(237, 46, 98, 0.06));
+            --card-bg: var(--white);
+            --border-color: rgba(117, 114, 126, 0.28);
+            --text-color: var(--black);
+            --muted-text: var(--gray-600);
+            --font-stack: "Inter", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        #Divbody {
+            min-height: 25vh;
+            font-family: var(--font-stack);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            padding: 1rem;
+            background: var(--bg-gradient);
+        }
+
+        .card {
+            width: min(920px, 100%);
+            background: var(--card-bg);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-header {
+            padding: 2.25rem 2rem 1rem;
+            background: linear-gradient(135deg, rgba(208, 123, 153, 0.1), rgba(237, 46, 98, 0.06));
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .card-header p {
+            color: var(--muted-text);
+            font-size: 1.8rem;
+            line-height: 1.5;
+        }
+
+        #box-form {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            padding: 1rem 2rem 2rem;
+        }
+
+        /* ======== CORREÇÃO AQUI ======== */
+        .steps {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: min-height 0.3s ease;
+        }
+
+        .step {
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .step.active {
+            display: flex;
+        }
+
+        /* ================================ */
+
+        .h2form {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-top: 1rem;
+        }
+
+        .step label {
+            color: var(--muted-text);
+            font-size: 1.8rem;
+        }
+
+        .step input,
+        .step select,
+        .step textarea {
+            padding: 0.85rem 0.95rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: #fafafa;
+            color: var(--text-color);
+            font-size: 2.5rem;
+            transition:
+                border 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .step input:focus,
+        .step select:focus,
+        .step textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(208, 123, 153, 0.25);
+            background: #fff;
+        }
+
+        /* CHECKBOXES */
+        .checkbox-group {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .checkbox-grid {
+            display: grid;
+            gap: 0.5rem 1rem;
+            grid-template-columns: repeat(3, 1fr);
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.5rem;
+            border-radius: 10px;
+            transition: background 0.2s ease;
+        }
+
+        .checkbox-item:hover {
+            background: rgba(117, 114, 126, 0.08);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            accent-color: var(--accent-strong);
+        }
+
+        /* FOOTER E BOTÕES */
+        .card-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .progress {
+            width: 100%;
+            height: 25px;
+            background: rgba(117, 114, 126, 0.2);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+            transition: width 0.25s ease;
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 1rem;
+        }
+
+        button {
+            border: none;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 2.5rem;
+            cursor: pointer;
+            padding: 0.9rem 1.4rem;
+            transition:
+                transform 0.15s ease,
+                box-shadow 0.15s ease,
+                opacity 0.2s ease;
+            width: 100%;
+        }
+
+        button:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        button.primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+            color: var(--white);
+        }
+
+        button.primary:not(:disabled):hover,
+        button.secondary:not(:disabled):hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 16px rgba(237, 46, 98, 0.22);
+        }
+
+        button.secondary {
+            background: transparent;
+            color: var(--muted-text);
+            border: 1px solid var(--border-color);
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .success-message h2 {
+            font-size: 3rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .success-message p {
+            color: var(--muted-text);
+        }
+
+        .error {
+            color: var(--accent-strong);
+            font-size: 1.9rem;
+            margin-top: 0.35rem;
+            display: none;
+        }
+
+        /* Anim */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsivo */
+        @media (max-width: 640px) {
+            .card-header,
+            #box-form {
+                padding: 1.5rem;
+            }
+
+            .h2form {
+                font-size: 2rem;
+            }
+
+            .step input {
+                font-size: 1.8rem;
+            }
+
+            .card-header h1 {
+                font-size: 2.2rem;
+            }
+
+            .card-header p {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+
+    <body>
+        <div id="Divbody">
+            <div class="card" id="card">
+                <header class="card-header">
+                    <h1>Cadastro</h1>
+                    <p>Preencha seus dados para avançar.</p>
+                </header>
+
+                <form id="box-form">
+                    <div class="steps" id="steps">
+                        <!-- Steps 1 a 4: dados -->
+                                              
+                        <div class="step active" data-step="0">
+                            <h2 class="h2form">Nome completo</h2>
+                            <label for="fullName">Preencha o campo abaixo</label>
+                            <input
+                                id="fullName"
+                                name="fullName"
+                                type="text"
+                                placeholder="Seu nome e sobrenome"
+                                maxlength="50"
+                                required
+                                autocomplete="name" />
+                            <span class="error" aria-live="polite"></span>
+                        </div>
+
+                        
+                        <div class="step active" data-step="1">
+                            <h2 class="h2form">Nome completo</h2>
+                            <label for="fullName">Preencha o campo abaixo</label>
+                            <input
+                                id="fullName"
+                                name="fullName"
+                                type="text"
+                                placeholder="Seu nome e sobrenome"
+                                maxlength="50"
+                                required
+                                autocomplete="name" />
+                            <span class="error" aria-live="polite"></span>
+                        </div>
+
+                        <div class="step" data-step="1">
+                            <h2 class="h2form">E-mail</h2>
+                            <label for="email">Preencha o campo abaixo</label>
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                placeholder="voce@empresa.com"
+                                maxlength="50"
+                                required
+                                autocomplete="email" />
+                            <span class="error" aria-live="polite"></span>
+                        </div>
+
+                        <div class="step" data-step="2">
+                            <h2 class="h2form">Nome da Farmácia/Laboratório</h2>
+                            <label for="company">Preencha o campo abaixo</label>
+                            <input
+                                id="company"
+                                name="company"
+                                type="text"
+                                placeholder="Razão social ou nome fantasia"
+                                maxlength="100"
+                                required />
+                            <span class="error" aria-live="polite"></span>
+                        </div>
+
+                        <div class="step" data-step="3">
+                            <h2 class="h2form">Telefone (com DDD)</h2>
+                            <label for="phone">Preencha o campo abaixo</label>
+                            <input
+                                id="phone"
+                                name="phone"
+                                type="tel"
+                                placeholder="(00) 00000-0000"
+                                maxlength="17"
+                                required
+                                autocomplete="tel" />
+                            <span class="error" aria-live="polite"></span>
+                        </div>
+
+                        <div class="step" data-step="4">
+                            <h2 class="h2form">CNPJ</h2>
+                            <label for="cnpj">Preencha o campo abaixo</label>
+                            <input
+                                id="cnpj"
+                                name="cnpj"
+                                type="text"
+                                placeholder="00.000.000/0000-00"
+                                maxlength="18"
+                                required />
+                            <span class="error" aria-live="polite"></span>
+                        </div>
+
+                        <!-- Steps 5, 6, 7: checkboxes -->
+                        <!-- CARD 1 -->
+                        <div class="step" data-step="5">
+                            <h2 class="h2form">Interesse principal? (1 de 3)</h2>
+                            <label>Selecione as opções desejadas</label>
+                            <div class="checkbox-grid">
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Aerosil 200" /><span
+                                        >Aerosil 200</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Alprazolam" /><span
+                                        >Alprazolam</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Aripiprazol" /><span
+                                        >Aripiprazol</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Betametasona, Base" /><span
+                                        >Betametasona, Base</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Bromazepam" /><span
+                                        >Bromazepam</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Celecoxibe" /><span
+                                        >Celecoxibe</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Colágeno Hidrolisado Peptan" /><span
+                                        >Colágeno Hidrolisado Peptan</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Colágeno Tipo 2" /><span
+                                        >Colágeno Tipo 2</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Condroitina, Sulfato" /><span
+                                        >Condroitina, Sulfato</span
+                                    ></label
+                                >
+                            </div>
+                            <span class="error" aria-live="polite"></span>
+                        </div>
+                        <!-- CARD 2 -->
+                        <div class="step" data-step="6">
+                            <h2 class="h2form">Interesse principal? (2 de 3)</h2>
+                            <label>Selecione as opções desejadas</label>
+                            <div class="checkbox-grid">
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Dapoxetina" /><span
+                                        >Dapoxetina</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input
+                                        type="checkbox"
+                                        name="interests"
+                                        value="Desvenlafaxina, Succinato Monoidratado" /><span
+                                        >Desvenlafaxina, Succinato Monoidratado</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Donepezila, Hci" /><span
+                                        >Donepezila, Hci</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Doxepina, Hidrocloridrato" /><span
+                                        >Doxepina, Hidrocloridrato</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Estanozolol" /><span
+                                        >Estanozolol</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Fibras De Crustáceos" /><span
+                                        >Fibras De Crustáceos</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Furosemida" /><span
+                                        >Furosemida</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input
+                                        type="checkbox"
+                                        name="interests"
+                                        value="Lisdexanfetamina, Dimesilato" /><span
+                                        >Lisdexanfetamina, Dimesilato</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Mesterolona" /><span
+                                        >Mesterolona</span
+                                    ></label
+                                >
+                            </div>
+                            <span class="error" aria-live="polite"></span>
+                        </div>
+                        <!-- CARD 3 -->
+                        <div class="step" data-step="7">
+                            <h2 class="h2form">Interesse principal? (3 de 3)</h2>
+                            <label>Selecione as opções desejadas</label>
+                            <div class="checkbox-grid">
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Metotrexato" /><span
+                                        >Metotrexato</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Nandrolona, Decanoato" /><span
+                                        >Nandrolona, Decanoato</span
+                                    ></label
+                                >
+
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Prasterona" /><span
+                                        >Prasterona</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Sibutramina, Cloridrato" /><span
+                                        >Sibutramina, Cloridrato</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Talco Farmacêutico" /><span
+                                        >Talco Farmacêutico</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="Zolpidem, Hemitartrato" /><span
+                                        >Zolpidem, Hemitartrato</span
+                                    ></label
+                                >
+                                <label class="checkbox-item"
+                                    ><input type="checkbox" name="interests" value="OUTROS" /><span>Outros</span></label
+                                >
+                            </div>
+                            <span class="error" aria-live="polite"></span>
+                        </div>
+                        <br /><br />
+                        <!-- Step 8 - Outros -->
+                        <div class="step" data-step="8">
+                            <h2 class="h2form">OUTROS (opcional)</h2>
+                            <label for="other">Descreva outros itens de interesse</label>
+                            <input
+                                id="other"
+                                name="other"
+                                type="text"
+                                placeholder="Descreva outros itens de interesse"
+                                maxlength="140" />
+                            <span class="error" aria-live="polite"></span>
+                        </div>
+                    </div>
+
+                    <footer class="card-footer">
+                        <div class="progress" aria-hidden="true">
+                            <div class="progress-bar" id="progress-bar"></div>
+                        </div>
+                        <div class="actions">
+                            <button type="button" class="secondary" id="back-btn" disabled>Voltar</button>
+                            <button type="button" class="primary" id="next-btn">Próximo</button>
+                        </div>
+                    </footer>
+                </form>
+            </div>
+        </div>
+        <script>
+            /* ======= Referências principais ======= */
+            const stepsContainer = document.querySelector("#steps");
+            const nextBtn = document.querySelector("#next-btn");
+            const backBtn = document.querySelector("#back-btn");
+            const progressBar = document.querySelector("#progress-bar");
+            const card = document.querySelector("#card");
+            const form = document.querySelector("#box-form");
+
+            /* ======= Variáveis de controle ======= */
+            let currentStep = 0;
+            let parcialEnviado = false;
+            const steps = document.querySelectorAll(".step");
+            const totalSteps = steps.length;
+
+            /* ======= Configurações ======= */
+            const WEBHOOK_FINAL = "https://hook.us1.make.celonis.com/xgecmfhc9c2rq4gp0bgdpgbopuifrfb3";
+            const WEBHOOK_PARCIAL = "https://hook.us1.make.celonis.com/xgecmfhc9c2rq4gp0bgdpgbopuifrfb3";
+
+            /* ======= Exibição e navegação ======= */
+            function showStep(index) {
+                steps.forEach((s) => s.classList.remove("active"));
+                const target = steps[index];
+                if (target) {
+                    target.classList.add("active");
+                    const input = target.querySelector("input, select, textarea");
+                    requestAnimationFrame(() => input?.focus());
+                }
+                backBtn.disabled = index === 0;
+                nextBtn.textContent = index === totalSteps - 1 ? "Enviar" : "Próximo";
+                updateProgress(index);
+            }
+
+            function updateProgress(index) {
+                const progress = ((index + 1) / totalSteps) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+
+            /* ======= Validação dos campos ======= */
+            function validateCurrentStep() {
+                const current = stepsContainer.querySelector(`.step[data-step="${currentStep}"]`);
+                const err = current.querySelector(".error");
+                const input = current.querySelector("input, select, textarea");
+                const nextBtn = document.getElementById("next-btn");
+
+                // CNPJ
+                if (input?.id === "cnpj") {
+                    const value = input.value.trim();
+                    if (value.length !== 18) {
+                        err.textContent = "Digite o CNPJ completo no formato 00.000.000/0000-00.";
+                        err.style.display = "block";
+                        nextBtn.disabled = true;
+                        nextBtn.style.opacity = "0.5";
+                        nextBtn.style.cursor = "not-allowed";
+                        return false;
+                    }
+                    err.textContent = "";
+                    err.style.display = "none";
+                    nextBtn.disabled = false;
+                    nextBtn.style.opacity = "1";
+                    nextBtn.style.cursor = "pointer";
+                    return true;
+                }
+
+                // Telefone
+                if (input?.id === "phone") {
+                    let valor = input.value.trim();
+                    let numeros = valor.replace(/D/g, "");
+                    if (numeros.startsWith("55") && numeros.length === 13) numeros = numeros.slice(2);
+
+                    if (numeros.length !== 11) {
+                        input.value = "";
+                        err.textContent = "Informe o número com DDD e 9 dígitos. Ex: 31912345678";
+                        err.style.display = "block";
+                        nextBtn.disabled = true;
+                        nextBtn.style.opacity = "0.5";
+                        nextBtn.style.cursor = "not-allowed";
+                        return false;
+                    }
+
+                    const ddd = numeros.slice(0, 2);
+                    const parte1 = numeros.slice(2, 7);
+                    const parte2 = numeros.slice(7, 11);
+                    input.value = `55(${ddd})${parte1}-${parte2}`;
+
+                    err.textContent = "";
+                    err.style.display = "none";
+                    nextBtn.disabled = false;
+                    nextBtn.style.opacity = "1";
+                    nextBtn.style.cursor = "pointer";
+                    return true;
+                }
+                // E-mail
+                if (input?.id === "email") {
+                    const valor = input.value.trim();
+
+                    // Regex simples e eficiente para e-mails válidos
+                    const formatoValido = /^[^@]+@[^@]+$/.test(valor);
+                    if (!formatoValido) {
+                        err.textContent = "Digite um e-mail válido. Ex: nome@empresa.com";
+                        err.style.display = "block";
+                        nextBtn.disabled = true;
+                        nextBtn.style.opacity = "0.5";
+                        nextBtn.style.cursor = "not-allowed";
+                        return false;
+                    }
+
+                    // Se for válido, limpa erro e reabilita o botão
+                    err.textContent = "";
+                    err.style.display = "none";
+                    nextBtn.disabled = false;
+                    nextBtn.style.opacity = "1";
+                    nextBtn.style.cursor = "pointer";
+                    return true;
+                }
+
+                // HTML5 default
+                if (input && !input.checkValidity()) {
+                    err.textContent = input.validationMessage || "Preencha corretamente.";
+                    err.style.display = "block";
+                    return false;
+                }
+
+                err.textContent = "";
+                err.style.display = "none";
+                return true;
+            }
+
+            /* ======= Validação dinâmica on-blur ======= */
+            document.addEventListener("focusout", (e) => {
+                const el = e.target;
+                const currentStepEl = document.querySelector(`.step[data-step="${currentStep}"]`);
+                const isFormField = el.tagName === "INPUT" || el.tagName === "SELECT" || el.tagName === "TEXTAREA";
+
+                if (!isFormField || !currentStepEl || !currentStepEl.contains(el)) return;
+                if ((el.value || "").trim() === "") return;
+
+                validateCurrentStep();
+            });
+
+            /* ======= Webhook auxiliar ======= */
+            function hasRequiredForParcial() {
+                const data = Object.fromEntries(new FormData(form));
+                return Boolean(data.fullName && data.email && data.company && data.phone);
+            }
+
+            /* ======= Botões de navegação ======= */
+            nextBtn.addEventListener("click", async () => {
+                // Envio parcial
+                if (!parcialEnviado && hasRequiredForParcial()) {
+                    try {
+                        await sendToWebhook(WEBHOOK_PARCIAL, pickParcialPayload());
+                        parcialEnviado = true;
+                    } catch (e) {
+                        console.error("Webhook parcial falhou:", e);
+                    }
+                }
+
+                // Último passo
+                if (currentStep === totalSteps - 1) {
+                    await submitForm();
+                    return;
+                }
+
+                currentStep++;
+                showStep(currentStep);
+            });
+
+            backBtn.addEventListener("click", () => {
+                if (currentStep === 0) return;
+                currentStep--;
+                showStep(currentStep);
+                err.textContent = "";
+                err.style.display = "none";
+                nextBtn.disabled = false;
+                nextBtn.style.opacity = "1";
+                nextBtn.style.cursor = "pointer";
+            });
+
+            form.addEventListener("submit", (e) => e.preventDefault());
+
+            /* ======= Payloads ======= */
+            function pickParcialPayload() {
+                const fd = new FormData(form);
+                const data = Object.fromEntries(fd);
+                return {
+                    fullName: data.fullName || "",
+                    email: data.email || "",
+                    company: data.company || "",
+                    phone: data.phone || "",
+                    step: currentStep + 1,
+                    timestamp: new Date().toISOString()
+                };
+            }
+
+            function collectFullPayload() {
+                const fd = new FormData(form);
+                const data = Object.fromEntries(fd);
+                const interests = Array.from(form.querySelectorAll('input[name="interests"]:checked')).map(
+                    (i) => i.value
+                );
+
+                return {
+                    fullName: data.fullName || "",
+                    email: data.email || "",
+                    company: data.company || "",
+                    phone: data.phone || "",
+                    cnpj: data.cnpj || "",
+                    interests,
+                    other: data.other || "",
+                    timestamp: new Date().toISOString()
+                };
+            }
+
+            /* ======= Envio final ======= */
+            async function submitForm() {
+                const payload = collectFullPayload();
+
+                try {
+                    await sendToWebhook(WEBHOOK_FINAL, payload);
+                    card.innerHTML = `
+      <div class="success-message">
+        <h2>Cadastro concluído! 🎉</h2>
+        <p>Recebemos suas respostas e entraremos em contato em breve.</p>
+      </div>
+    `;
+                } catch (error) {
+                    alert("Não foi possível enviar as informações no momento. Por favor, tente novamente.");
+                    console.error(error);
+                }
+            }
+
+            /* ======= Função de envio ======= */
+            async function sendToWebhook(url, data) {
+                const res = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+                if (!res.ok) throw new Error("Erro ao enviar dados para o webhook");
+            }
+
+            function initCNPJMask() {
+                document.addEventListener("input", (e) => {
+                    const el = e.target;
+                    if (!el || el.id !== "cnpj") return;
+
+                    let v = el.value;
+
+                    // Pega apenas a contagem de dígitos (ignorando pontos, barras e traços)
+                    const digits = v.replace(/D/g, "");
+
+                    // Adiciona os caracteres conforme a posição, sem limpar o que já existe
+                    if (digits.length === 2) {
+                        el.value = v + ".";
+                    } else if (digits.length === 6) {
+                        el.value = v + ".";
+                    } else if (digits.length === 10) {
+                        el.value = v + "/";
+                    } else if (digits.length === 15) {
+                        el.value = v + "-";
+                    }
+
+                    // Se apagar algo e o formato quebrar, volta ao número puro
+                    const prev = el.dataset.prevLength || 0;
+                    if (digits.length < prev) {
+                        el.value = digits;
+                    }
+                    el.dataset.prevLength = digits.length;
+                });
+            }
+
+            /* ======= Inicialização ======= */
+            showStep(currentStep);
+            initCNPJMask();
+        </script>
+    </body>
+</html>
